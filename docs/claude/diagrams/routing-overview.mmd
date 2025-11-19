@@ -1,0 +1,14 @@
+graph TD
+    WAN["Internet / WAN"]
+    OPN["OPNsense (Firewall/Router)"]
+
+    VLAN188["VLAN 192.168.188.0/24 Heimnetz"]
+    VLANIOT["VLAN 10.0.0.0/24 IoT"]
+    VLANADM["VLAN Admin (z.B. 102)"]
+    VLANAD["VLAN AD/Server (z.B. 5)"]
+
+    WAN --> OPN
+    OPN --> VLAN188
+    OPN --> VLANIOT
+    OPN --> VLANADM
+    OPN --> VLANAD

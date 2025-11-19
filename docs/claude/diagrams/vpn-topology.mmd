@@ -1,0 +1,18 @@
+graph LR
+    subgraph Home["mrz.ip (Daheim)"]
+        PVE1["Proxmox NUC"]
+        OPN["OPNsense"]
+    end
+
+    subgraph NBG["Nürnberg vServer"]
+        PBS["Proxmox Backup Server"]
+        NFS["NFS-Storage"]
+    end
+
+    subgraph STG["St. Georgen"]
+        STGNC["Nextcloud Pi (alt)"]
+    end
+
+    PVE1 ---|VPN-Tunnel| NBG
+    OPN ---|Routing / VPN| NBG
+    OPN --- STG

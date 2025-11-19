@@ -1,0 +1,17 @@
+graph TD
+    OPN["OPNsense"]
+
+    VLAN188["VLAN Heimnetz\n192.168.188.0/24"]
+    VLANIOT["VLAN IoT\n10.0.0.0/24"]
+    VLANADM["VLAN Admin\nz.B. VLAN-102"]
+    VLANAD["VLAN AD/Server\nz.B. VLAN-5"]
+
+    OPN --> VLAN188
+    OPN --> VLANIOT
+    OPN --> VLANADM
+    OPN --> VLANAD
+
+    VLAN188 --> Clients["Clients / PCs / WLAN"]
+    VLANIOT --> IoT["IoT / Zigbee / Shelly"]
+    VLANADM --> Mgmt["Proxmox / OPNsense / Switches"]
+    VLANAD --> AD["Domain Controller / zentrale Server"]

@@ -1,0 +1,38 @@
+graph LR
+    subgraph Home["mrz.ip (Daheim)"]
+        PVE1["Proxmox NUC"]
+        OPN["OPNsense VM"]
+        NC["Nextcloud"]
+        IMM["Immich"]
+        HA["Home Assistant"]
+        Z2M["Zigbee2MQTT"]
+        PIH["Pi-hole"]
+    end
+
+    subgraph NBG["Nürnberg (vServer)"]
+        PBS["Proxmox Backup Server"]
+        NFS["NFS-Storage"]
+    end
+
+    subgraph STG["St. Georgen"]
+        NCPi["Nextcloud Pi (alt)"]
+        NFS_STG["NFS-Shares (alt)"]
+    end
+
+    Internet((Internet))
+
+    Internet --- OPN
+    OPN --- PVE1
+    PVE1 --- NC
+    PVE1 --- IMM
+    PVE1 --- HA
+    PVE1 --- Z2M
+    PVE1 --- PIH
+
+    PVE1 ---|VPN| NBG
+    NBG --- PBS
+    NBG --- NFS
+
+    OPN --- STG
+    STG --- NCPi
+    STG --- NFS_STG

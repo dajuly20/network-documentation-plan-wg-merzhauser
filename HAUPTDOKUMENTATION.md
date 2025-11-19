@@ -338,57 +338,66 @@ graph TB
 
 ```mermaid
 graph TB
-    subgraph "Proxmox Infrastructure"
-        CLUSTER[🏢 Proxmox Cluster<br/>homelab]
+    subgraph "Proxmox Cluster: homelab"
+        
+        %% Cluster
+        CLUSTER[🏢 Cluster: homelab]
         
         %% Nodes
-        NODE1[🖥️ pve (192.168.188.177)<br/>Status: online<br/>Uptime: 15+ days<br/>Web: https://192.168.188.177:8006/]
-        NODE2[🖥️ pve-backup (192.168.188.156)<br/>Status: online<br/>Backup Node<br/>Storage Focus]
-        NODE3[🖥️ proxmox-docker (192.168.188.179)<br/>Status: online<br/>Container Focus]
+        NODE_pve[🖥️ pve.mrz.ip<br/>192.168.188.177<br/>Status: online<br/>Uptime: 15+ days<br/>Web: https://192.168.188.177:8006/]
+        NODE_pve2[🖥️ pve-backup.mrz.ip<br/>192.168.188.156<br/>Status: online<br/>Uptime: 12+ days<br/>Backup Focus]
+        NODE_pve3[🖥️ proxmox-docker<br/>192.168.188.179<br/>Status: online<br/>Container Focus]
         
-        CLUSTER --> NODE1
-        CLUSTER --> NODE2  
-        CLUSTER --> NODE3
+        CLUSTER --> NODE_pve
+        CLUSTER --> NODE_pve2  
+        CLUSTER --> NODE_pve3
         
-        %% VMs
-        VM100[🖥️ VM 100: ubuntu-server<br/>Status: running<br/>OS: ubuntu<br/>RAM: 4GB, CPU: 4 Cores]
-        VM101[🖥️ VM 101: windows-10<br/>Status: stopped<br/>OS: win10<br/>RAM: 8GB, CPU: 6 Cores]
-        VM102[🖥️ VM 102: opnsense<br/>Status: running<br/>OS: firewall<br/>RAM: 2GB, CPU: 2 Cores]
+        %% Virtual Machines
+        VM_100[🖥️ VM 100: ubuntu-server<br/>Status: running<br/>OS: ubuntu<br/>RAM: 4096MB<br/>CPU: 4 Cores<br/>Disk: local-lvm:vm-100]
+        VM_101[🖥️ VM 101: windows-10<br/>Status: stopped<br/>OS: win10<br/>RAM: 8192MB<br/>CPU: 6 Cores<br/>Disk: local-lvm:vm-101]
+        VM_102[🖥️ VM 102: opnsense-firewall<br/>Status: running<br/>OS: firewall<br/>RAM: 2048MB<br/>CPU: 2 Cores<br/>Disk: local-lvm:vm-102]
+        VM_103[🖥️ VM 103: home-assistant<br/>Status: running<br/>OS: debian<br/>RAM: 1024MB<br/>CPU: 1 Core<br/>Disk: local-lvm:vm-103]
         
-        NODE1 --> VM100
-        NODE1 --> VM101
-        NODE1 --> VM102
+        NODE_pve --> VM_100
+        NODE_pve --> VM_101
+        NODE_pve --> VM_102
+        NODE_pve2 --> VM_103
         
         %% LXC Containers
-        LXC200[📦 CT 200: docker-host<br/>Status: running<br/>OS: ubuntu<br/>RAM: 2GB, CPU: 2 Cores]
-        LXC201[📦 CT 201: web-server<br/>Status: running<br/>OS: debian<br/>RAM: 1GB, CPU: 2 Cores]
-        LXC202[📦 CT 202: home-assistant<br/>Status: running<br/>OS: debian<br/>RAM: 1GB, CPU: 1 Core]
-        LXC203[📦 CT 203: pihole-backup<br/>Status: stopped<br/>OS: debian<br/>RAM: 512MB, CPU: 1 Core]
+        LXC_200[📦 CT 200: docker-host<br/>Status: running<br/>OS: ubuntu<br/>RAM: 2048MB<br/>CPU: 2 Cores<br/>Storage: local-lvm:vm-200-disk-0]
+        LXC_201[📦 CT 201: web-server<br/>Status: running<br/>OS: debian<br/>RAM: 1024MB<br/>CPU: 2 Cores<br/>Storage: local-lvm:vm-201-disk-0]
+        LXC_202[📦 CT 202: proxy-server<br/>Status: running<br/>OS: debian<br/>RAM: 512MB<br/>CPU: 1 Core<br/>Storage: local-lvm:vm-202-disk-0]
+        LXC_203[📦 CT 203: pihole-backup<br/>Status: stopped<br/>OS: debian<br/>RAM: 512MB<br/>CPU: 1 Core<br/>Storage: local-lvm:vm-203-disk-0]
+        LXC_204[📦 CT 204: monitoring<br/>Status: running<br/>OS: debian<br/>RAM: 1024MB<br/>CPU: 1 Core<br/>Storage: local-lvm:vm-204-disk-0]
         
-        NODE1 --> LXC200
-        NODE1 --> LXC201
-        NODE2 --> LXC202
-        NODE2 --> LXC203
+        NODE_pve --> LXC_200
+        NODE_pve --> LXC_201
+        NODE_pve2 --> LXC_202
+        NODE_pve2 --> LXC_203
+        NODE_pve3 --> LXC_204
         
         %% Storage
-        STORAGE1[💾 local<br/>Type: dir<br/>Content: iso,backup]
-        STORAGE2[💾 local-lvm<br/>Type: lvmthin<br/>Content: images,rootdir]
-        STORAGE3[💾 backup-nfs<br/>Type: nfs<br/>Content: backup]
+        STORAGE_local[💾 Storage: local<br/>Type: dir<br/>Content: iso,backup]
+        STORAGE_local_lvm[💾 Storage: local-lvm<br/>Type: lvmthin<br/>Content: images,rootdir]
+        STORAGE_backup[💾 Storage: backup-nfs<br/>Type: nfs<br/>Content: backup]
+        STORAGE_iso[💾 Storage: iso-storage<br/>Type: nfs<br/>Content: iso,vztmpl]
         
-        CLUSTER --> STORAGE1
-        CLUSTER --> STORAGE2
-        CLUSTER --> STORAGE3
+        CLUSTER --> STORAGE_local
+        CLUSTER --> STORAGE_local_lvm
+        CLUSTER --> STORAGE_backup
+        CLUSTER --> STORAGE_iso
         
         %% Network
-        NET1[🌐 vmbr0<br/>192.168.188.0/24<br/>Main Network]
-        NET2[🌐 vmbr1<br/>10.0.0.0/24<br/>IoT Network]
-        NET3[🌐 vmbr2<br/>Isolated<br/>DMZ Network]
+        NET_vmbr0[🌐 Bridge: vmbr0<br/>192.168.188.177/24<br/>Main Network]
+        NET_vmbr1[🌐 Bridge: vmbr1<br/>10.0.0.1/24<br/>IoT Network]
+        NET_vmbr2[🌐 Bridge: vmbr2<br/>Isolated<br/>DMZ Network]
         
-        CLUSTER --> NET1
-        CLUSTER --> NET2
-        CLUSTER --> NET3
+        CLUSTER --> NET_vmbr0
+        CLUSTER --> NET_vmbr1
+        CLUSTER --> NET_vmbr2
     end
 
+    %% Styling
     classDef vmClass fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     classDef lxcClass fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
     classDef nodeClass fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
@@ -396,30 +405,74 @@ graph TB
     classDef clusterClass fill:#fce4ec,stroke:#880e4f,stroke-width:3px
     classDef networkClass fill:#f1f8e9,stroke:#33691e,stroke-width:2px
 
-    class VM100,VM101,VM102 vmClass
-    class LXC200,LXC201,LXC202,LXC203 lxcClass
-    class NODE1,NODE2,NODE3 nodeClass
-    class STORAGE1,STORAGE2,STORAGE3 storageClass
+    %% VMs Styling
+    class VM_100,VM_101,VM_102,VM_103 vmClass
+    
+    %% LXC Styling
+    class LXC_200,LXC_201,LXC_202,LXC_203,LXC_204 lxcClass
+    
+    %% Nodes Styling
+    class NODE_pve,NODE_pve2,NODE_pve3 nodeClass
+    
+    %% Storage Styling
+    class STORAGE_local,STORAGE_local_lvm,STORAGE_backup,STORAGE_iso storageClass
+    
+    %% Network Styling
+    class NET_vmbr0,NET_vmbr1,NET_vmbr2 networkClass
+    
+    %% Cluster
     class CLUSTER clusterClass
-    class NET1,NET2,NET3 networkClass
 ```
 
 ### 📊 Proxmox Ressourcen-Übersicht
 
 #### Virtual Machines
+
 | VMID | Name | Status | Memory | CPU | Storage | OS |
 |------|------|--------|--------|-----|---------|-----|
-| 100 | ubuntu-server | ✅ running | 4096MB | 4 Cores | local-lvm | ubuntu |
-| 101 | windows-10 | ⏸️ stopped | 8192MB | 6 Cores | local-lvm | win10 |
-| 102 | opnsense-firewall | ✅ running | 2048MB | 2 Cores | local-lvm | other |
+| 100 | ubuntu-server | ✅ running | 4096MB | 4 Cores | local-lvm:vm-100 | ubuntu |
+| 101 | windows-10 | ⏸️ stopped | 8192MB | 6 Cores | local-lvm:vm-101 | win10 |
+| 102 | opnsense-firewall | ✅ running | 2048MB | 2 Cores | local-lvm:vm-102 | firewall |
+| 103 | home-assistant-vm | ✅ running | 1024MB | 1 Core | local-lvm:vm-103 | debian |
 
 #### LXC Containers
+
 | CTID | Name | Status | Memory | CPU | Storage | OS |
 |------|------|--------|--------|-----|---------|-----|
-| 200 | docker-host | ✅ running | 2048MB | 2 Cores | local-lvm | ubuntu |
-| 201 | web-server | ✅ running | 1024MB | 2 Cores | local-lvm | debian |
-| 202 | home-assistant | ✅ running | 1024MB | 1 Core | local-lvm | debian |
-| 203 | pihole-backup | ⏸️ stopped | 512MB | 1 Core | local-lvm | debian |
+| 200 | docker-host | ✅ running | 2048MB | 2 Cores | local-lvm:vm-200-disk-0 | ubuntu |
+| 201 | web-server | ✅ running | 1024MB | 2 Cores | local-lvm:vm-201-disk-0 | debian |
+| 202 | proxy-server | ✅ running | 512MB | 1 Core | local-lvm:vm-202-disk-0 | debian |
+| 203 | pihole-backup | ⏸️ stopped | 512MB | 1 Core | local-lvm:vm-203-disk-0 | debian |
+| 204 | monitoring | ✅ running | 1024MB | 1 Core | local-lvm:vm-204-disk-0 | debian |
+
+#### Storage-Systeme
+
+| Name | Type | Content | Status | Beschreibung |
+|------|------|---------|--------|--------------|
+| local | dir | iso,backup | ✅ enabled | Local Directory Storage |
+| local-lvm | lvmthin | images,rootdir | ✅ enabled | LVM Thin Provisioning |
+| backup-nfs | nfs | backup | ✅ enabled | NFS Backup Storage |
+| iso-storage | nfs | iso,vztmpl | ✅ enabled | ISO & Templates Storage |
+
+#### Network Bridges
+
+| Bridge | IP-Adresse | VLAN | Beschreibung |
+|--------|-----------|------|--------------|
+| vmbr0 | 192.168.188.177/24 | Main | Haupt-Netzwerk-Bridge |
+| vmbr1 | 10.0.0.1/24 | IoT | IoT VLAN Bridge |
+| vmbr2 | - | DMZ | Isolierte DMZ Bridge |
+
+#### System-Informationen
+
+| Parameter | Wert |
+|-----------|------|
+| **Cluster-Name** | homelab |
+| **Proxmox Version** | pve-manager/8.1.4/ec5affc9e2e6c001 |
+| **Kernel** | 6.8.12-1-pve |
+| **Hauptnode Uptime** | 15+ Tage |
+| **Backup-Node Uptime** | 12+ Tage |
+| **Aktive VMs** | 3 von 4 (75%) |
+| **Aktive Container** | 4 von 5 (80%) |
 
 ---
 

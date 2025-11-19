@@ -1,0 +1,18 @@
+flowchart LR
+    subgraph Prod["Produktivsysteme (mrz.ip)"]
+        PVE1["Proxmox NUC"]
+        VMs["VMs/Container\n(OPNsense, Nextcloud, Immich, HA, ...)"]
+    end
+
+    subgraph BackupLocal["Lokaler PBS"]
+        PBS_LOCAL["PBS @ mrz.ip"]
+    end
+
+    subgraph BackupRemote["Remote PBS / NFS"]
+        PBS_NBG["PBS @ Nürnberg"]
+        NFS_NBG["NFS-Storage @ Nürnberg"]
+    end
+
+    VMs -->|Backups| PBS_LOCAL
+    PBS_LOCAL -->|Sync/Replicate| PBS_NBG
+    PBS_NBG --> NFS_NBG

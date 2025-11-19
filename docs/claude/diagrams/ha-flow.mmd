@@ -1,0 +1,23 @@
+flowchart LR
+    subgraph HA["Home Assistant"]
+        HA_CORE["HA Core"]
+        DASH["Dashboards"]
+        AUTOM["Automationen"]
+    end
+
+    subgraph Z2M["Zigbee2MQTT"]
+        ZB_GW["Zigbee Koordinator"]
+        ZB_DEV["Zigbee Geräte"]
+    end
+
+    subgraph USERS["User / Bewohner"]
+        APP["HA App / Browser"]
+        VOICE["Voice Assistant (z.B. ChatGPT)"]
+    end
+
+    ZB_DEV --> ZB_GW --> Z2M --> HA_CORE
+    HA_CORE --> AUTOM
+    HA_CORE --> DASH
+
+    USERS --> APP --> DASH
+    USERS --> VOICE --> HA_CORE

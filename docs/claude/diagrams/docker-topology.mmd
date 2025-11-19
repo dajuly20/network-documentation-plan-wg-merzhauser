@@ -1,0 +1,22 @@
+graph LR
+    subgraph Host["Proxmox NUC"]
+        OPN["OPNsense VM"]
+        subgraph CT["LXC / Docker-Host"]
+            NC["Nextcloud (Docker)"]
+            IMM["Immich (Docker)"]
+            HA["Home Assistant (Container/VM)"]
+            Z2M["Zigbee2MQTT (Container)"]
+            PIH["Pi-hole (Container)"]
+            PORT["Portainer (Container)"]
+            AUTH["Authentik (Container)"]
+        end
+    end
+
+    OPN --- CT
+    CT --- NC
+    CT --- IMM
+    CT --- HA
+    CT --- Z2M
+    CT --- PIH
+    CT --- PORT
+    CT --- AUTH
