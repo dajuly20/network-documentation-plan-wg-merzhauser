@@ -45,10 +45,12 @@ graph TB
         PVE[🟢 Proxmox VE<br/>192.168.188.177<br/>pve.mrz.ip<br/>MAC: 1C:69:7A:0A:2A:73]
         PVE_BACKUP[🟢 Proxmox Backup<br/>192.168.188.156<br/>pve-backup.mrz.ip<br/>MAC: BC:24:11:9B:AB:A7]
         PVE_DOCKER[🟢 Proxmox Docker<br/>192.168.188.179<br/>proxmox-docker<br/>MAC: BC:24:11:73:BF:DF]
+        PROXY[🔵 Proxy Server<br/>proxy.mrz.ip<br/>Reverse Proxy / Load Balancer]
         
         SWITCH --> PVE
         SWITCH --> PVE_BACKUP
         SWITCH --> PVE_DOCKER
+        SWITCH --> PROXY
         
         %% Network Components
         CORE_SWITCH[🔶 Core Switch<br/>192.168.188.54<br/>MAC: FC:22:F4:EC:15:B1]
@@ -429,6 +431,7 @@ graph TB
 |---------|-----|------------|--------------|--------------|
 | **FritzBox Router** | http://192.168.188.1/ | 192.168.188.1 | Router-Management | Web-Interface |
 | **Pi-hole DNS** | http://wg.weis.er/ | 192.168.188.2 | DNS-Management | Admin-Panel |
+| **Reverse Proxy** | http://proxy.mrz.ip/ | TBD | Proxy-Management | Load Balancer |
 | **Proxmox VE** | https://192.168.188.177:8006/ | 192.168.188.177 | Virtualisierung | Web-Console |
 | **OPNsense Firewall** | http://openSence.mrz.ip/ | 192.168.188.254 | Firewall-Management | Web-GUI |
 | **IoT VLAN Gateway** | http://10.0.0.254/ | 10.0.0.254 | IoT-Management | Gateway-Config |
@@ -442,17 +445,20 @@ graph LR
         
         ROUTER[🔵 Router<br/>FritzBox<br/>192.168.188.1]
         DNS[🔴 DNS<br/>Pi-hole<br/>wg.weis.er]
+        PROXY[🟡 Proxy<br/>Reverse Proxy<br/>proxy.mrz.ip]
         PROXMOX[🟢 Virtualization<br/>Proxmox<br/>:8006]
         FIREWALL[🟠 Security<br/>OPNsense<br/>:254]
         
         DASHBOARD --> ROUTER
         DASHBOARD --> DNS
+        DASHBOARD --> PROXY
         DASHBOARD --> PROXMOX
         DASHBOARD --> FIREWALL
         
         %% Quick Actions
         ROUTER --> ROUTER_ACTIONS[📊 Bandwidth Monitor<br/>🔒 Port Forwarding<br/>📱 Device Management]
         DNS --> DNS_ACTIONS[🚫 Block Lists<br/>📈 Query Analytics<br/>⚙️ Local DNS]
+        PROXY --> PROXY_ACTIONS[🔄 Load Balancing<br/>🔒 SSL Termination<br/>🎯 Service Routing]
         PROXMOX --> PROXMOX_ACTIONS[🖥️ VM Management<br/>📦 Container Control<br/>💾 Backup Monitor]
         FIREWALL --> FIREWALL_ACTIONS[🔥 Traffic Rules<br/>🛡️ Intrusion Detection<br/>📊 Threat Analysis]
     end
@@ -462,8 +468,8 @@ graph LR
     classDef actionClass fill:#f1f8e9,stroke:#388e3c,stroke-width:1px
 
     class DASHBOARD dashboardClass
-    class ROUTER,DNS,PROXMOX,FIREWALL serviceClass
-    class ROUTER_ACTIONS,DNS_ACTIONS,PROXMOX_ACTIONS,FIREWALL_ACTIONS actionClass
+    class ROUTER,DNS,PROXY,PROXMOX,FIREWALL serviceClass
+    class ROUTER_ACTIONS,DNS_ACTIONS,PROXY_ACTIONS,PROXMOX_ACTIONS,FIREWALL_ACTIONS actionClass
 ```
 
 ---
@@ -528,6 +534,7 @@ chmod +x generate-proxmox-documentation.sh
 | Domain/Zone | Typ | Beschreibung | DNS-Server |
 |-------------|-----|--------------|------------|
 | `mrz.ip` | Internal | Hauptzone lokales Netzwerk | Pi-hole (192.168.188.2) |
+| `proxy.mrz.ip` | Internal | Reverse Proxy Server | Pi-hole (192.168.188.2) |
 | `wg.weis.er` | Internal | Alternative Pi-hole Domain | Pi-hole (192.168.188.2) |
 | `julianw.ip` | Internal | Weitere interne Zone | Pi-hole (192.168.188.2) |
 | `*.mrz.ip` | Wildcard | Alle Subdomains mrz.ip | Pi-hole (192.168.188.2) |

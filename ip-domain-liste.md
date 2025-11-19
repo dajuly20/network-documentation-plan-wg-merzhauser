@@ -106,6 +106,7 @@
 | Domain/Zone | Beschreibung |
 |-------------|--------------|
 | `mrz.ip` | Hauptzone für lokales Netzwerk |
+| `proxy.mrz.ip` | Reverse Proxy Server |
 | `wg.weis.er` | Alternative Domain für Pi-hole (192.168.188.2) |
 | `julianw.ip` | Weitere interne Zone |
 | `*.mrz.ip` | Alle Subdomains der mrz.ip Zone |
@@ -133,6 +134,7 @@
 | Service | URL | IP-Adresse | Beschreibung |
 |---------|-----|------------|--------------|
 | Pi-hole DNS | <http://wg.weis.er/> | 192.168.188.2 | DNS Server Management |
+| Reverse Proxy | <http://proxy.mrz.ip/> | TBD | Reverse Proxy / Load Balancer |
 | Proxmox VE | <https://192.168.188.177:8006/> | 192.168.188.177 | Virtualisierung Management |
 | OPNsense Firewall | <http://openSence.mrz.ip/> | 192.168.188.254 | Firewall Management (alle VLANs) |
 | IoT VLAN Gateway | <http://10.0.0.254/> | 10.0.0.254 | IoT VLAN Management |
