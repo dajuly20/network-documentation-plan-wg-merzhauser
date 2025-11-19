@@ -35,7 +35,7 @@ graph TB
         %% Core Infrastructure
         SWITCH[🔶 Zyxel XGS1210-12<br/>Core Switch<br/>2.5 Gbit/s Ports]
         PIHOLE[🔴 Pi-hole DNS<br/>192.168.188.2<br/>pihole.mrz.ip / wg.weis.er<br/>MAC: D8:3A:DD:3B:90:FF]
-        FIREWALL[🟠 OPNsense Firewall<br/>192.168.188.254<br/>openSence.mrz.ip<br/>MAC: BC:24:11:D0:7E:E6]
+        FIREWALL[🟠 OPNsense Firewall<br/>192.168.188.254<br/>opensence.mrz.ip<br/>MAC: BC:24:11:D0:7E:E6]
         
         FRITZBOX --> SWITCH
         SWITCH --> PIHOLE
@@ -433,7 +433,7 @@ graph TB
 | **Pi-hole DNS** | http://wg.weis.er/ | 192.168.188.2 | DNS-Management | Admin-Panel |
 | **Reverse Proxy** | http://proxy.mrz.ip/ | TBD | Proxy-Management | Load Balancer |
 | **Proxmox VE** | https://192.168.188.177:8006/ | 192.168.188.177 | Virtualisierung | Web-Console |
-| **OPNsense Firewall** | http://openSence.mrz.ip/ | 192.168.188.254 | Firewall-Management | Web-GUI |
+| **OPNsense Firewall** | http://opensence.mrz.ip/ | 192.168.188.254 | Firewall-Management | Web-GUI |
 | **IoT VLAN Gateway** | http://10.0.0.254/ | 10.0.0.254 | IoT-Management | Gateway-Config |
 
 ### 📱 Quick-Access Dashboard
@@ -534,6 +534,7 @@ chmod +x generate-proxmox-documentation.sh
 | Domain/Zone | Typ | Beschreibung | DNS-Server |
 |-------------|-----|--------------|------------|
 | `mrz.ip` | Internal | Hauptzone lokales Netzwerk | Pi-hole (192.168.188.2) |
+| `opensence.mrz.ip` | Internal | OPNsense Firewall Interface | Pi-hole (192.168.188.2) |
 | `proxy.mrz.ip` | Internal | Reverse Proxy Server | Pi-hole (192.168.188.2) |
 | `wg.weis.er` | Internal | Alternative Pi-hole Domain | Pi-hole (192.168.188.2) |
 | `julianw.ip` | Internal | Weitere interne Zone | Pi-hole (192.168.188.2) |
@@ -581,7 +582,7 @@ pie title Netzwerk-Geräte Verteilung
 - 🔵 **Router**: http://192.168.188.1/
 - 🔴 **DNS**: http://wg.weis.er/
 - 🟢 **Proxmox**: https://192.168.188.177:8006/
-- 🟠 **Firewall**: http://openSence.mrz.ip/
+- 🟠 **Firewall**: http://opensence.mrz.ip/
 - 📡 **GitHub**: https://github.com/dajuly20/network-documentation-plan-wg-merzhauser
 
 ---
