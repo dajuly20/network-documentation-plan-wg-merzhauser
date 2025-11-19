@@ -13,7 +13,7 @@ flowchart TD
     P8[Gerät frei<br>Port 8]
     P9[FireTV<br>Port 9<br>VLAN 1]
     P10[Pi-hole<br>Port 10<br>VLAN 1]
-    P11[PC „jul“<br>Port 11<br>VLAN 1]
+    P11[PC jul<br>Port 11<br>VLAN 1]
     P12[Gerät unbekannt<br>Port 12]
   end
 

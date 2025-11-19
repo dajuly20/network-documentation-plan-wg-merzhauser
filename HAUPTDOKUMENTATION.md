@@ -136,7 +136,7 @@ graph LR
         P8[🔌 Port 8<br/>🆓 FREI<br/>Available]
         P9[🔌 Port 9<br/>FireTV<br/>VLAN 1<br/>192.168.188.149]
         P10[🔌 Port 10<br/>Pi-hole<br/>VLAN 1<br/>192.168.188.2]
-        P11[🔌 Port 11<br/>PC "jul"<br/>VLAN 1<br/>Main PC]
+        P11[🔌 Port 11<br/>PC jul<br/>VLAN 1<br/>Main PC]
         P12[🔌 Port 12<br/>❓ Unbekannt<br/>Unknown Device]
         
         %% Connections
@@ -176,7 +176,7 @@ graph LR
 | 8 | **FREI** | - | - | ❌ Verfügbar | - |
 | 9 | FireTV Julian | 192.168.188.149 | VLAN 1 | ✅ Aktiv | 00:00:00:00:02:BB |
 | 10 | Pi-hole DNS | 192.168.188.2 | VLAN 1 | ✅ Aktiv | D8:3A:DD:3B:90:FF |
-| 11 | PC "jul" | - | VLAN 1 | ✅ Aktiv | - |
+| 11 | PC jul | - | VLAN 1 | ✅ Aktiv | - |
 | 12 | Unbekanntes Gerät | - | - | ❓ Unbekannt | - |
 
 ---
