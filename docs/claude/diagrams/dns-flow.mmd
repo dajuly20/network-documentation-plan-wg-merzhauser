@@ -1,0 +1,76 @@
+graph TB
+    subgraph clients [👥 Clients - Alle Netzwerk-Geräte]
+        PC[💻 Computer]
+        PHONE[📱 Smartphones]
+        IOT_DEVICES[🏠 IoT-Geräte]
+        SERVERS[🖥️ Server/VMs]
+    end
+
+    subgraph pihole_zone [🔴 Pi-hole DNS Server - 192.168.188.2]
+        PIHOLE_MAIN[🔴 Pi-hole<br/>wg.weis.er<br/>192.168.188.2]
+
+        subgraph pihole_features [Pi-hole Features]
+            BLOCKLIST[🚫 Ad Blocking<br/>Blocklists]
+            LOCAL_DNS[🏠 Local DNS<br/>*.mrz.ip<br/>*.julianw.ip]
+            CACHE[⚡ DNS Cache]
+            ANALYTICS[📊 Query Analytics]
+        end
+
+        PIHOLE_MAIN --> BLOCKLIST
+        PIHOLE_MAIN --> LOCAL_DNS
+        PIHOLE_MAIN --> CACHE
+        PIHOLE_MAIN --> ANALYTICS
+    end
+
+    subgraph upstream [☁️ Upstream DNS Server]
+        CLOUDFLARE[☁️ Cloudflare DNS<br/>1.1.1.1<br/>1.0.0.1]
+        GOOGLE[☁️ Google DNS<br/>8.8.8.8<br/>8.8.4.4]
+        QUAD9[☁️ Quad9 DNS<br/>9.9.9.9]
+    end
+
+    subgraph local_zones [🏠 Lokale DNS-Zonen]
+        MRZ_IP[📌 *.mrz.ip<br/>Haupt-Zone]
+        JULIANW_IP[📌 *.julianw.ip<br/>Alternative Zone]
+
+        subgraph examples [Beispiele]
+            EX1[box.mrz.ip → 192.168.188.1]
+            EX2[pihole.mrz.ip → 192.168.188.2]
+            EX3[pve.mrz.ip → 192.168.188.177]
+            EX4[opensence.mrz.ip → 192.168.188.254]
+            EX5[proxy.mrz.ip → TBD]
+        end
+    end
+
+    PC -.DNS Query.-> PIHOLE_MAIN
+    PHONE -.DNS Query.-> PIHOLE_MAIN
+    IOT_DEVICES -.DNS Query.-> PIHOLE_MAIN
+    SERVERS -.DNS Query.-> PIHOLE_MAIN
+
+    PIHOLE_MAIN -->|Blocked Domain| BLOCKLIST
+    PIHOLE_MAIN -->|Local Domain| LOCAL_DNS
+    PIHOLE_MAIN -->|External Domain| CACHE
+    CACHE -->|Not Cached| CLOUDFLARE
+    CACHE -->|Not Cached| GOOGLE
+    CACHE -->|Not Cached| QUAD9
+
+    LOCAL_DNS --> MRZ_IP
+    LOCAL_DNS --> JULIANW_IP
+    MRZ_IP --> EX1
+    MRZ_IP --> EX2
+    MRZ_IP --> EX3
+    MRZ_IP --> EX4
+    MRZ_IP --> EX5
+
+    classDef clientClass fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef piholeClass fill:#ffebee,stroke:#c62828,stroke-width:3px
+    classDef featureClass fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef upstreamClass fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef localClass fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef exampleClass fill:#fce4ec,stroke:#c2185b,stroke-width:1px
+
+    class PC,PHONE,IOT_DEVICES,SERVERS clientClass
+    class PIHOLE_MAIN piholeClass
+    class BLOCKLIST,LOCAL_DNS,CACHE,ANALYTICS featureClass
+    class CLOUDFLARE,GOOGLE,QUAD9 upstreamClass
+    class MRZ_IP,JULIANW_IP localClass
+    class EX1,EX2,EX3,EX4,EX5 exampleClass

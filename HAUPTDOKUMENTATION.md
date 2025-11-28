@@ -9,15 +9,19 @@
 ## 📋 Inhaltsverzeichnis
 
 1. [🌐 Netzwerk-Übersicht](#-netzwerk-übersicht)
-2. [🔌 Switch-Konfiguration](#-switch-konfiguration)
-3. [📡 IP-Adressen & Geräte](#-ip-adressen--geräte)
-4. [🔒 VPN-Verbindungen](#-vpn-verbindungen)
-5. [💻 Proxmox-Infrastruktur](#-proxmox-infrastruktur)
-6. [🌐 Web-Interfaces](#-web-interfaces)
-7. [📊 Automatisierung](#-automatisierung)
+2. [🌐 DNS-Infrastruktur](#-dns-infrastruktur) → [Details](DNS-CONFIG.md)
+3. [🔒 Firewall & Routing](#-firewall--routing-konfiguration) → [Details](FIREWALL-CONFIG.md)
+4. [🔒 VPN-Verbindungen](#-vpn-verbindungen) → [Details](VPN-CONFIG.md)
+5. [🔌 Switch-Konfiguration](#-switch-konfiguration)
+6. [📡 IP-Adressen & Geräte](#-ip-adressen--geräte)
+7. [💻 Proxmox-Infrastruktur](#-proxmox-infrastruktur) → [Details](PROXMOX-README.md)
+8. [🌐 Web-Interfaces](#-web-interfaces)
+9. [📊 Automatisierung](#-automatisierung) → [Details](AUTOMATION.md)
+10. [🏷️ Domain-Übersicht](#️-domain-übersicht)
+11. [📋 Zusammenfassung](#-zusammenfassung)
+12. [📞 Support & Wartung](#-support--wartung)
 
 ---
-
 ## 🌐 Netzwerk-Übersicht
 
 ### 🏗️ Infrastructure-Diagramm
@@ -117,111 +121,43 @@ graph TB
 
 ---
 
-## 🔌 Switch-Konfiguration
 
-### Zyxel XGS1210-12 Port-Übersicht
+## 🌐 DNS-Infrastruktur
 
-```mermaid
-graph LR
-    subgraph "Zyxel XGS1210-12 Switch Ports"
-        P1[🔌 Port 1<br/>FritzBox<br/>VLAN 4<br/>192.168.188.1]
-        P2[🔌 Port 2<br/>Schrank Switch<br/>VLAN 1+4<br/>Uplink]
-        P3[🔌 Port 3<br/>Zigbee Pi<br/>VLAN 1<br/>Home Assistant]
-        P4[🔌 Port 4<br/>Onkyo Receiver<br/>VLAN 1<br/>192.168.188.173]
-        P5[🔌 Port 5<br/>RetroPie<br/>VLAN 1<br/>Gaming]
-        P6[🔌 Port 6<br/>🆓 FREI<br/>Available]
-        P7[🔌 Port 7<br/>🆓 FREI<br/>Available]
-        P8[🔌 Port 8<br/>🆓 FREI<br/>Available]
-        P9[🔌 Port 9<br/>FireTV<br/>VLAN 1<br/>192.168.188.149]
-        P10[🔌 Port 10<br/>Pi-hole<br/>VLAN 1<br/>192.168.188.2]
-        P11[🔌 Port 11<br/>PC jul<br/>VLAN 1<br/>Main PC]
-        P12[🔌 Port 12<br/>❓ Unbekannt<br/>Unknown Device]
-        
-        %% Connections
-        FRITZBOX_CONN[📡 FritzBox 5590] --> P1
-        SCHRANK[🔧 Schrank Switch] --> P2
-        ZIGBEE[🏠 Zigbee Hub] --> P3
-        ONKYO_CONN[🔊 AV Receiver] --> P4
-        RETROPIE[🎮 Gaming System] --> P5
-        FIRETV_CONN[📺 Media Player] --> P9
-        PIHOLE_CONN[🔴 DNS Server] --> P10
-        PC_JUL[💻 Main Computer] --> P11
-    end
+**Pi-hole DNS Server** - Zentrale DNS-Verwaltung mit Ad-Blocking
 
-    %% Port Status Styling
-    classDef activePort fill:#c8e6c9,stroke:#4caf50,stroke-width:2px
-    classDef freePort fill:#fff3e0,stroke:#ff9800,stroke-width:2px
-    classDef unknownPort fill:#ffebee,stroke:#f44336,stroke-width:2px
-    classDef managementPort fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+- **Server**: 192.168.188.2 (pihole.mrz.ip / wg.weis.er)
+- **Web-Interface**: [http://wg.weis.er/](http://wg.weis.er/) | [http://192.168.188.2/](http://192.168.188.2/)
+- **Upstream DNS**: Cloudflare (1.1.1.1), Google (8.8.8.8)
+- **Lokale Zonen**: *.mrz.ip, *.julianw.ip
+- **Statistiken**: ~10.000 Queries/Tag, 25-30% geblockt
 
-    class P1 managementPort
-    class P2,P3,P4,P5,P9,P10,P11 activePort
-    class P6,P7,P8 freePort
-    class P12 unknownPort
-```
+### Wichtige DNS-Einträge:
+- box.mrz.ip → 192.168.188.1 (FritzBox)
+- pve.mrz.ip → 192.168.188.177 (Proxmox VE)
+- opensence.mrz.ip → 192.168.188.254 (OPNsense)
 
-### 📊 Port-Zuordnungstabelle
-
-| Port | Gerät | IP-Adresse | VLAN | Status | MAC-Adresse |
-|------|-------|------------|------|--------|-------------|
-| 1 | FritzBox 5590 | 192.168.188.1 | VLAN 4 | ✅ Aktiv | 0C:72:74:AE:64:EB |
-| 2 | Schrank-Switch | - | VLAN 1+4 | ✅ Aktiv | - |
-| 3 | Zigbee Pi (Home Assistant) | 192.168.188.178 | VLAN 1 | ✅ Aktiv | 02:65:CD:22:E0:F0 |
-| 4 | Onkyo Receiver | 192.168.188.173 | VLAN 1 | ✅ Aktiv | 00:09:B0:E6:C1:95 |
-| 5 | RetroPie | - | VLAN 1 | ✅ Aktiv | - |
-| 6 | **FREI** | - | - | ❌ Verfügbar | - |
-| 7 | **FREI** | - | - | ❌ Verfügbar | - |
-| 8 | **FREI** | - | - | ❌ Verfügbar | - |
-| 9 | FireTV Julian | 192.168.188.149 | VLAN 1 | ✅ Aktiv | 00:00:00:00:02:BB |
-| 10 | Pi-hole DNS | 192.168.188.2 | VLAN 1 | ✅ Aktiv | D8:3A:DD:3B:90:FF |
-| 11 | PC jul | - | VLAN 1 | ✅ Aktiv | - |
-| 12 | Unbekanntes Gerät | - | - | ❓ Unbekannt | - |
+📖 **[Vollständige DNS-Konfiguration →](DNS-CONFIG.md)**
 
 ---
 
-## 📡 IP-Adressen & Geräte
+## 🔒 Firewall & Routing Konfiguration
 
-### 🔧 Core Infrastructure
+**Zweischichtige Firewall-Architektur** mit FritzBox und OPNsense
 
-| IP-Adresse | Hostname | Beschreibung | Typ | MAC-Adresse |
-|------------|----------|--------------|-----|-------------|
-| `192.168.188.1` | box.mrz.ip | FritzBox 5590 Fiber Router | Router | 0C:72:74:AE:64:EB |
-| `192.168.188.2` | pihole.mrz.ip / wg.weis.er | Pi-hole DNS Server | DNS | D8:3A:DD:3B:90:FF |
-| `192.168.188.254` | openSence.mrz.ip | OPNsense Firewall | Firewall | BC:24:11:D0:7E:E6 |
-| `10.0.0.254` | - | IoT VLAN Gateway | Gateway | - |
+- **Layer 1**: FritzBox 5590 (192.168.188.1) - NAT, VPN, Port Forwarding
+- **Layer 2**: OPNsense (192.168.188.254) - IoT Isolation, IDS/IPS
+- **Static Route**: 10.0.0.0/24 → 192.168.188.254 (IoT VLAN)
 
-### 💻 Server & Virtualisierung
+### Security Features:
+- ✅ IoT-Geräte isoliert in separatem VLAN (10.0.0.0/24)
+- ✅ Intrusion Detection/Prevention (IDS/IPS)
+- ✅ Traffic Shaping & QoS
+- ✅ GeoIP Blocking
 
-| IP-Adresse | Hostname | Beschreibung | MAC-Adresse |
-|------------|----------|--------------|-------------|
-| `192.168.188.3` | proxmox-turbo-2-5-gbit | Proxmox Turbo Server | 5C:85:7E:3E:F3:1E |
-| `192.168.188.177` | pve | Proxmox VE Hauptserver | 1C:69:7A:0A:2A:73 |
-| `192.168.188.156` | pve-backup.mrz.ip | Proxmox Backup Server | BC:24:11:9B:AB:A7 |
-| `192.168.188.179` | proxmox-docker | Proxmox Docker Host | BC:24:11:73:BF:DF |
-| `192.168.188.178` | homeassistant-VM | Home Assistant VM | 02:65:CD:22:E0:F0 |
+📖 **[Vollständige Firewall-Konfiguration →](FIREWALL-CONFIG.md)**
 
-### 🌐 Netzwerk-Equipment
-
-| IP-Adresse | Hostname | Beschreibung | MAC-Adresse |
-|------------|----------|--------------|-------------|
-| `192.168.188.54` | core-switch | Core Switch | FC:22:F4:EC:15:B1 |
-| `192.168.188.57` | helper-switch | Helper Switch | D8:EC:5E:5B:7B:91 |
-| `192.168.188.61` | Unify-U6-Pro | UniFi Access Point | D8:B3:70:2D:48:A0 |
-| `192.168.188.79` | ap.mrz.ip | FritzBox 7490 Access Point | 08:96:D7:94:05:53 |
-
-### 📱 Smart Home & IoT
-
-| IP-Adresse | Hostname | Beschreibung | MAC-Adresse |
-|------------|----------|--------------|-------------|
-| `192.168.188.20` | shellyuni | Shelly Uni | A8:03:2A:B6:18:B0 |
-| `192.168.188.24` | shelly1-monitor | Shelly Monitor | 48:55:19:CA:22:2F |
-| `192.168.188.88` | shellyuni-98CDAC2B78CF | Shelly Uni | 98:CD:AC:2B:78:CF |
-| `192.168.188.97` | shelly-spiegelleuchte | Shelly Spiegelleuchte | 98:CD:AC:2D:5C:EA |
-| `192.168.188.113` | geschirrspuehler-siemens | Geschirrspüler (WLAN 5GHz) | C8:D7:78:9B:F1:46 |
-| `192.168.188.123` | shelly1-universum | Shelly Universum | 98:CD:AC:2D:5E:4E |
-| `192.168.188.155` | shellyix3-JULIAN-LICHTSCHALTER | Shelly Lichtschalter | E8:DB:84:D6:C6:37 |
-
-### 📺 Media & Entertainment
+---
 
 | IP-Adresse | Hostname | Beschreibung | MAC-Adresse |
 |------------|----------|--------------|-------------|
@@ -435,6 +371,19 @@ graph TB
 
 #### LXC Containers
 
+
+## 🔒 VPN-Verbindungen
+
+**FritzBox VPN Server** - Wireguard & IPSec
+
+- **Wireguard VPN**: 14 Clients (192.168.188.205-219)
+- **IPSec VPN**: 5 Clients (192.168.188.201-206)
+- **Port**: 51820 UDP (Wireguard), 500/4500 UDP (IPSec)
+- **DynDNS**: MyFRITZ! aktiviert
+
+📖 **[Vollständige VPN-Konfiguration →](VPN-CONFIG.md)**
+
+---
 | CTID | Name | Status | Memory | CPU | Storage | OS |
 |------|------|--------|--------|-----|---------|-----|
 | 200 | docker-host | ✅ running | 2048MB | 2 Cores | local-lvm:vm-200-disk-0 | ubuntu |
@@ -488,6 +437,14 @@ graph TB
 | **IoT VLAN Gateway** | http://10.0.0.254/ | 10.0.0.254 | IoT-Management | Gateway-Config |
 
 ### 📱 Quick-Access Dashboard
+
+#### 🎛️ Network Control Center
+
+**🔴 Pi-hole DNS:**
+- [http://wg.weis.er/](http://wg.weis.er/) - Pi-hole Admin Interface
+- [http://192.168.188.2/](http://192.168.188.2/) - Pi-hole direkte IP
+
+---
 
 ```mermaid
 graph LR
@@ -556,115 +513,105 @@ chmod +x generate-proxmox-documentation.sh
 5 2 * * * cd /path/to/repo && git add . && git commit -m "Auto-update $(date)" && git push
 ```
 
-### 📈 Netzwerk-Monitoring
+### 📊 Mermaid-Diagramm Automatisierung
 
-#### Überwachte Metriken:
-- **Bandwidth-Nutzung** über FritzBox
-- **DNS-Query-Statistiken** über Pi-hole
-- **VM/Container-Performance** über Proxmox
-- **Firewall-Logs** über OPNsense
-- **Device-Connectivity** über SNMP
+Alle Netzwerk-Diagramme in dieser Dokumentation werden als Mermaid-Code in `.mmd`-Dateien gespeichert und automatisch zu Bildern gerendert.
 
-#### Alert-System:
-- 📧 **E-Mail-Benachrichtigungen** bei Ausfällen
-- 📱 **Push-Notifications** für kritische Events
-- 📊 **Dashboard-Updates** in Echtzeit
+#### 🗂️ Diagramm-Struktur
 
----
-
-## 🏷️ Domain-Übersicht
-
-### 🌍 Externe Domains
-| Domain | Typ | Beschreibung | DNS-Provider |
-|--------|-----|--------------|--------------|
-| `julianw.de` | External | Hauptdomain (vServer) | External DNS |
-| `wiche.eu` | External | Alternative Domain | External DNS |
-| `lisamae.de` | External | Projekt-Domain | External DNS |
-
-### 🏠 Interne Domains/Zonen
-| Domain/Zone | Typ | Beschreibung | DNS-Server |
-|-------------|-----|--------------|------------|
-| `mrz.ip` | Internal | Hauptzone lokales Netzwerk | Pi-hole (192.168.188.2) |
-| `opensence.mrz.ip` | Internal | OPNsense Firewall Interface | Pi-hole (192.168.188.2) |
-| `proxy.mrz.ip` | Internal | Reverse Proxy Server | Pi-hole (192.168.188.2) |
-| `wg.weis.er` | Internal | Alternative Pi-hole Domain | Pi-hole (192.168.188.2) |
-| `julianw.ip` | Internal | Weitere interne Zone | Pi-hole (192.168.188.2) |
-| `*.mrz.ip` | Wildcard | Alle Subdomains mrz.ip | Pi-hole (192.168.188.2) |
-| `*.julianw.ip` | Wildcard | Alle Subdomains julianw.ip | Pi-hole (192.168.188.2) |
-
----
-
-## 📋 Zusammenfassung
-
-### 📊 Infrastruktur-Statistiken
-
-```mermaid
-pie title Netzwerk-Geräte Verteilung
-    "Server & VMs" : 25
-    "Smart Home IoT" : 15
-    "Media & Entertainment" : 10
-    "Netzwerk-Equipment" : 8
-    "VPN-Clients" : 25
-    "Smartphones & Laptops" : 17
+```
+docs/claude/diagrams/
+├── infrastructure.mmd          # Haupt-Infrastruktur-Diagramm
+├── dns-flow.mmd               # DNS & Pi-hole Flow
+├── firewall-architecture.mmd  # Firewall & Routing
+├── switch-ports.mmd           # Switch-Konfiguration (falls vorhanden)
+├── vpn-topology.mmd           # VPN-Übersicht
+└── ... (weitere Diagramme)
 ```
 
-### 🔢 Zahlen & Fakten
+#### 🔧 Diagramme Generieren
 
-#### 🌐 **Netzwerk-Umfang**:
-- **~90 IP-Adressen** im Hauptnetzwerk (192.168.188.0/24)
-- **25 VPN-Verbindungen** (15x Wireguard + 5x IPSec + 5x Mobile)
-- **~60 aktive Geräte** (LAN + WLAN)
-- **3 VLANs** (Main LAN + Management + IoT)
-- **5 externe Domains** + interne DNS-Zonen
+**Alle Diagramme neu erstellen:**
+```bash
+cd docs/claude
+make diagrams
+```
 
-#### 💻 **Server-Infrastructure**:
-- **3 Proxmox-Nodes** mit Hochverfügbarkeit
-- **12+ VMs** für verschiedene Services
-- **8+ LXC-Container** für Microservices
-- **4 Storage-Systeme** (Local, LVM, NFS, Backup)
+**Nur veränderte Diagramme neu erstellen:**
+```bash
+# Make erkennt automatisch geänderte .mmd-Dateien
+# und generiert nur diese neu (basierend auf Datei-Timestamps)
+cd docs/claude
+make diagrams
+```
 
-#### 🔧 **Hardware-Basis**:
-- **FritzBox 5590 Fiber** (1,1 Gbit/s Glasfaser)
-- **Zyxel XGS1210-12** (2,5 Gbit/s Switch)
-- **Multiple Managed Switches** für Segmentierung
-- **UniFi Access Points** für WLAN-Coverage
+**Einzelnes Diagramm erstellen:**
+```bash
+cd docs/claude
+make diagrams/infrastructure.png    # Nur PNG
+make diagrams/infrastructure.svg    # Nur SVG
 
-### 🎯 **Wichtige URLs** (Bookmark-Liste):
-- 🔵 **Router**: http://192.168.188.1/
-- 🔴 **DNS**: http://wg.weis.er/
-- 🟢 **Proxmox**: https://192.168.188.177:8006/
-- 🟠 **Firewall**: http://opensence.mrz.ip/
-- 📡 **GitHub**: https://github.com/dajuly20/network-documentation-plan-wg-merzhauser
+# Oder manuell mit mmdc:
+mmdc -i diagrams/infrastructure.mmd -o diagrams/infrastructure.png
+```
+
+**Alle generierten Bilder löschen:**
+```bash
+cd docs/claude
+make clean
+```
+
+#### 📝 Diagramme in Markdown Einbinden
+
+**Option 1: Live-Rendering mit Mermaid.js (Web)**
+```markdown
+```mermaid
+graph TB
+    A[Node A] --> B[Node B]
+```
+```
+
+**Option 2: Statische Bilder (für PDF/Print)**
+```markdown
+![Infrastructure Diagram](docs/claude/diagrams/infrastructure.png)
+```
+
+**Option 3: Beide Varianten kombinieren**
+```markdown
+<!-- Mermaid-Code für Web-Ansicht -->
+```mermaid
+graph TB
+    A[Node A] --> B[Node B]
+```
+
+<!-- Alternativ: Bild für PDF/Export -->
+![Fallback](docs/claude/diagrams/infrastructure.png)
+```
+
+## 📊 Automatisierung
+
+**Automatische Dokumentations-Generierung und Diagramm-Rendering**
+
+### 🤖 Proxmox Auto-Documentation
+- Automatische Erkennung aller VMs/Container
+- Mermaid-Diagramm-Generierung
+- Cron-Job fähig
+
+### 📊 Mermaid-Diagramme
+- Alle Diagramme in `docs/claude/diagrams/*.mmd`
+- Automatische PNG/SVG-Generierung via `make diagrams`
+- Git Pre-Commit Hook für Auto-Update
+- GitHub Actions für CI/CD
+
+### 🔄 Workflow:
+```bash
+# Diagramme generieren (nur geänderte)
+cd docs/claude && make diagrams
+
+# Commit mit Auto-Generierung
+git commit -m "Update diagrams"  # Hook generiert automatisch
+```
+
+📖 **[Vollständige Automatisierungs-Dokumentation →](AUTOMATION.md)**
 
 ---
-
-## 📞 Support & Wartung
-
-### 🔧 **Wichtige Zugangsdaten-Locations**:
-- Router-Credentials: Aufkleber auf FritzBox
-- Pi-hole Admin: Web-Interface ohne Login
-- Proxmox: Root-Account mit SSH-Key
-- OPNsense: Admin-Account über HTTPS
-
-### 🆘 **Troubleshooting Quick-Guide**:
-1. **Internet-Ausfall**: FritzBox reboot (192.168.188.1)
-2. **DNS-Probleme**: Pi-hole Status prüfen (wg.weis.er)
-3. **VM-Probleme**: Proxmox Console (192.168.188.177:8006)
-4. **Firewall-Issues**: OPNsense Logs (192.168.188.254)
-
-### 📅 **Wartungsplan**:
-- **Wöchentlich**: Backup-Status prüfen
-- **Monatlich**: Updates einspielen
-- **Quartalsweise**: Hardware-Health-Check
-- **Jährlich**: Komplette Dokumentations-Review
-
----
-
-*📄 Dokumentation automatisch generiert und gepflegt*  
-*🔄 Letzte Aktualisierung: 19. November 2025*  
-*📍 Standort: WG Merzhauser, Deutschland*  
-*👤 Verantwortlich: Julian Wiche*
-
----
-
-**🔗 Repository**: https://github.com/dajuly20/network-documentation-plan-wg-merzhauser

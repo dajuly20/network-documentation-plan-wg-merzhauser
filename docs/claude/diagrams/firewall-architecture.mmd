@@ -1,0 +1,73 @@
+graph TB
+    subgraph internet_zone [🌍 Internet Zone]
+        INTERNET[🌍 Internet<br/>Public Network]
+    end
+
+    subgraph fritzbox_routing [🔵 FritzBox 5590 - Router & Firewall Layer 1]
+        FRITZBOX_WAN[WAN Interface<br/>Public IP<br/>Glasfaser 1,1 Gbit/s]
+        FRITZBOX_LAN[LAN Interface<br/>192.168.188.1<br/>Gateway]
+
+        subgraph fritzbox_rules [FritzBox Firewall Rules]
+            FB_NAT[🔄 NAT/PAT<br/>Port Forwarding]
+            FB_VPN[🔐 VPN Server<br/>Wireguard + IPSec]
+            FB_UPNP[📡 UPnP]
+            FB_FILTER[🚫 Packet Filter]
+        end
+
+        subgraph static_routes [📍 Static Routes]
+            ROUTE_IOT[Route: 10.0.0.0/24<br/>→ 192.168.188.254<br/>IoT VLAN via OPNsense]
+            ROUTE_MGMT[Route: Management<br/>→ OPNsense]
+        end
+    end
+
+    subgraph opnsense_zone [🛡️ OPNsense Firewall - Security Layer 2]
+        OPNSENSE_WAN[WAN Interface<br/>192.168.188.254<br/>Main LAN]
+        OPNSENSE_IOT[IoT Interface<br/>10.0.0.254<br/>IoT VLAN]
+
+        subgraph opnsense_rules [OPNsense Firewall Rules]
+            OPN_IOT_ISOLATION[🔒 IoT Isolation<br/>Block IoT → LAN]
+            OPN_ALLOW_INTERNET[✅ Allow IoT → Internet]
+            OPN_ALLOW_HA[✅ Allow → Home Assistant]
+            OPN_IDS[🛡️ IDS/IPS<br/>Intrusion Detection]
+            OPN_TRAFFIC_SHAPING[📊 Traffic Shaping]
+        end
+    end
+
+    subgraph protected_zones [🏠 Protected Network Zones]
+        LAN_ZONE[🔷 Main LAN<br/>192.168.188.0/24<br/>Trusted Devices]
+        IOT_ZONE[🔶 IoT VLAN<br/>10.0.0.0/24<br/>Restricted Devices]
+    end
+
+    INTERNET <--> FRITZBOX_WAN
+    FRITZBOX_WAN <--> FRITZBOX_LAN
+    FRITZBOX_LAN --> FB_NAT
+    FRITZBOX_LAN --> FB_VPN
+    FRITZBOX_LAN --> FB_UPNP
+    FRITZBOX_LAN --> FB_FILTER
+
+    FRITZBOX_LAN ==>|Main Traffic| OPNSENSE_WAN
+    FRITZBOX_LAN -.Static Route.-> ROUTE_IOT
+    ROUTE_IOT ==>|10.0.0.0/24| OPNSENSE_IOT
+
+    OPNSENSE_WAN ==> LAN_ZONE
+    OPNSENSE_IOT ==> IOT_ZONE
+
+    OPNSENSE_WAN --> OPN_IOT_ISOLATION
+    OPNSENSE_WAN --> OPN_ALLOW_INTERNET
+    OPNSENSE_WAN --> OPN_ALLOW_HA
+    OPNSENSE_WAN --> OPN_IDS
+    OPNSENSE_WAN --> OPN_TRAFFIC_SHAPING
+
+    classDef internetClass fill:#ffebee,stroke:#c62828,stroke-width:3px
+    classDef fritzboxClass fill:#e3f2fd,stroke:#1565c0,stroke-width:3px
+    classDef opnsenseClass fill:#fff3e0,stroke:#e65100,stroke-width:3px
+    classDef ruleClass fill:#f1f8e9,stroke:#558b2f,stroke-width:2px
+    classDef routeClass fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef zoneClass fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+
+    class INTERNET internetClass
+    class FRITZBOX_WAN,FRITZBOX_LAN fritzboxClass
+    class OPNSENSE_WAN,OPNSENSE_IOT opnsenseClass
+    class FB_NAT,FB_VPN,FB_UPNP,FB_FILTER,OPN_IOT_ISOLATION,OPN_ALLOW_INTERNET,OPN_ALLOW_HA,OPN_IDS,OPN_TRAFFIC_SHAPING ruleClass
+    class ROUTE_IOT,ROUTE_MGMT routeClass
+    class LAN_ZONE,IOT_ZONE zoneClass

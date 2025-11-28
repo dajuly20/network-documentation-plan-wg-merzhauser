@@ -1,0 +1,52 @@
+name: Generate Mermaid Diagrams
+
+on:
+  push:
+    paths:
+      - 'docs/claude/diagrams/*.mmd'
+  pull_request:
+    paths:
+      - 'docs/claude/diagrams/*.mmd'
+
+jobs:
+  generate-diagrams:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Mermaid CLI
+        run: npm install -g @mermaid-js/mermaid-cli
+
+      - name: Generate Diagrams
+        run: |
+          cd docs/claude
+          make diagrams
+
+      - name: Check for changes
+        id: verify_diff
+        run: |
+          git diff --quiet docs/claude/diagrams/*.png docs/claude/diagrams/*.svg || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit generated files
+        if: steps.verify_diff.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/claude/diagrams/*.png docs/claude/diagrams/*.svg
+          git commit -m "🎨 Auto-generate diagrams from .mmd files"
+
+      - name: Push changes
+        if: steps.verify_diff.outputs.changed == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
