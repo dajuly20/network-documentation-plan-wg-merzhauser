@@ -1,27 +1,93 @@
 # 🏠 WG Merzhauser - Netzwerk Infrastrukturdokumentation
 
-> **Vollständige Dokumentation der Heimnetz-Infrastruktur**  
-> Erstellt am: 19. November 2025  
+> **Vollständige Dokumentation der Heimnetz-Infrastruktur**
+> Erstellt am: 19. November 2025
 > Server: Julian Wiche Netzwerk
+
+---
+
+## 📚 Archiv & Versionen
+
+- [📜 Original README Version](archive/README-original-version.md) - Ursprüngliche README.md
+- [📖 Vollständige HAUPTDOKUMENTATION](archive/HAUPTDOKUMENTATION-full-version.md) - Vollversion vor Konsolidierung
 
 ---
 
 ## 📋 Inhaltsverzeichnis
 
-1. [🌐 Netzwerk-Übersicht](#-netzwerk-übersicht)
-2. [🌐 DNS-Infrastruktur](#-dns-infrastruktur) → [Details](DNS-CONFIG.md)
-3. [🔒 Firewall & Routing](#-firewall--routing-konfiguration) → [Details](FIREWALL-CONFIG.md)
-4. [🔒 VPN-Verbindungen](#-vpn-verbindungen) → [Details](VPN-CONFIG.md)
-5. [🔌 Switch-Konfiguration](#-switch-konfiguration)
-6. [📡 IP-Adressen & Geräte](#-ip-adressen--geräte)
-7. [💻 Proxmox-Infrastruktur](#-proxmox-infrastruktur) → [Details](PROXMOX-README.md)
-8. [🌐 Web-Interfaces](#-web-interfaces)
-9. [📊 Automatisierung](#-automatisierung) → [Details](AUTOMATION.md)
-10. [🏷️ Domain-Übersicht](#️-domain-übersicht)
-11. [📋 Zusammenfassung](#-zusammenfassung)
-12. [📞 Support & Wartung](#-support--wartung)
+1. [⚡ Quickstart](#-quickstart--schnellzugriff)
+2. [🌐 Netzwerk-Übersicht](#-netzwerk-übersicht)
+3. [🌐 DNS-Infrastruktur](#-dns-infrastruktur) → [Details](DNS-CONFIG.md)
+4. [🔒 Firewall & Routing](#-firewall--routing-konfiguration) → [Details](FIREWALL-CONFIG.md)
+5. [🔒 VPN-Verbindungen](#-vpn-verbindungen) → [Details](VPN-CONFIG.md)
+6. [🔌 Switch-Konfiguration](#-switch-konfiguration)
+7. [📡 IP-Adressen & Geräte](#-ip-adressen--geräte)
+8. [💻 Proxmox-Infrastruktur](#-proxmox-infrastruktur) → [Details](PROXMOX-README.md)
+9. [🌐 Web-Interfaces](#-web-interfaces)
+10. [📊 Automatisierung](#-automatisierung) → [Details](AUTOMATION.md)
+11. [🏷️ Domain-Übersicht](#️-domain-übersicht)
+12. [📋 Zusammenfassung](#-zusammenfassung)
+13. [📞 Support & Wartung](#-support--wartung)
+
+**[⏩ Direkt zur detaillierten Dokumentation](#-netzwerk-übersicht)**
 
 ---
+
+## ⚡ Quickstart & Schnellzugriff
+
+### 🎯 Wichtigste Web-Interfaces
+
+| Service | URL | Beschreibung |
+|---------|-----|--------------|
+| 🔵 **Router** | [192.168.188.1](http://192.168.188.1/) | FritzBox Management |
+| 🔴 **DNS** | [wg.weis.er](http://wg.weis.er/) | Pi-hole Admin (Ad-Blocking) |
+| 🟢 **Virtualisierung** | [192.168.188.177:8006](https://192.168.188.177:8006/) | Proxmox VE |
+| 🟠 **Firewall** | [opensence.mrz.ip](http://opensence.mrz.ip/) | OPNsense (192.168.188.254) |
+| 🟡 **Proxy** | [proxy.mrz.ip](http://proxy.mrz.ip/) | Reverse Proxy |
+
+### 🔑 Kerndaten
+
+| Parameter | Wert |
+|-----------|------|
+| **Netzwerk** | 192.168.188.0/24 |
+| **Gateway** | 192.168.188.1 (FritzBox) |
+| **DNS Server** | 192.168.188.2 (Pi-hole) |
+| **IoT VLAN** | 10.0.0.0/24 (isoliert) |
+| **Internet** | Glasfaser 1,1 Gbit/s |
+| **VPN Clients** | 19 aktiv (14x Wireguard, 5x IPSec) |
+
+### 🏠 Wichtige Hosts
+
+| IP | Hostname | Funktion |
+|----|----------|----------|
+| 192.168.188.1 | box.mrz.ip | FritzBox Router |
+| 192.168.188.2 | pihole.mrz.ip | DNS & Ad-Blocker |
+| 192.168.188.177 | pve.mrz.ip | Proxmox Hauptnode |
+| 192.168.188.254 | opensence.mrz.ip | OPNsense Firewall |
+| 192.168.188.178 | homeassistant | Smart Home |
+
+<details>
+<summary>📋 Weitere Details anzeigen</summary>
+
+### 📊 Proxmox Cluster Status
+- **Cluster**: homelab (3 Nodes)
+- **VMs**: 4 (3 running, 1 stopped)
+- **Container**: 5 (4 running, 1 stopped)
+- **Storage**: local-lvm, NFS Backup
+
+### 🔒 VPN Übersicht
+- **Wireguard**: 14 Clients (192.168.188.205-219)
+- **IPSec**: 5 Clients (192.168.188.201-206)
+- **Port**: 51820 UDP (WG), 500/4500 UDP (IPSec)
+
+### 🌐 Domain-Struktur
+- **Lokale Domains**: *.mrz.ip, *.julianw.ip
+- **Pi-hole Queries**: ~10.000/Tag (25-30% geblockt)
+
+</details>
+
+---
+
 ## 🌐 Netzwerk-Übersicht
 
 ### 🏗️ Infrastructure-Diagramm
@@ -371,19 +437,6 @@ graph TB
 
 #### LXC Containers
 
-
-## 🔒 VPN-Verbindungen
-
-**FritzBox VPN Server** - Wireguard & IPSec
-
-- **Wireguard VPN**: 14 Clients (192.168.188.205-219)
-- **IPSec VPN**: 5 Clients (192.168.188.201-206)
-- **Port**: 51820 UDP (Wireguard), 500/4500 UDP (IPSec)
-- **DynDNS**: MyFRITZ! aktiviert
-
-📖 **[Vollständige VPN-Konfiguration →](VPN-CONFIG.md)**
-
----
 | CTID | Name | Status | Memory | CPU | Storage | OS |
 |------|------|--------|--------|-----|---------|-----|
 | 200 | docker-host | ✅ running | 2048MB | 2 Cores | local-lvm:vm-200-disk-0 | ubuntu |
@@ -425,60 +478,7 @@ graph TB
 
 ## 🌐 Web-Interfaces
 
-### 🔧 Management-URLs
-
-| Service | URL | IP-Adresse | Beschreibung | Zugangsdaten |
-|---------|-----|------------|--------------|--------------|
-| **FritzBox Router** | http://192.168.188.1/ | 192.168.188.1 | Router-Management | Web-Interface |
-| **Pi-hole DNS** | http://wg.weis.er/ | 192.168.188.2 | DNS-Management | Admin-Panel |
-| **Reverse Proxy** | http://proxy.mrz.ip/ | TBD | Proxy-Management | Load Balancer |
-| **Proxmox VE** | https://192.168.188.177:8006/ | 192.168.188.177 | Virtualisierung | Web-Console |
-| **OPNsense Firewall** | http://opensence.mrz.ip/ | 192.168.188.254 | Firewall-Management | Web-GUI |
-| **IoT VLAN Gateway** | http://10.0.0.254/ | 10.0.0.254 | IoT-Management | Gateway-Config |
-
-### 📱 Quick-Access Dashboard
-
-#### 🎛️ Network Control Center
-
-**🔴 Pi-hole DNS:**
-- [http://wg.weis.er/](http://wg.weis.er/) - Pi-hole Admin Interface
-- [http://192.168.188.2/](http://192.168.188.2/) - Pi-hole direkte IP
-
----
-
-```mermaid
-graph LR
-    subgraph "Management Dashboard"
-        DASHBOARD[🎛️ Network Control Center]
-        
-        ROUTER[🔵 Router<br/>FritzBox<br/>192.168.188.1]
-        DNS[🔴 DNS<br/>Pi-hole<br/>wg.weis.er]
-        PROXY[🟡 Proxy<br/>Reverse Proxy<br/>proxy.mrz.ip]
-        PROXMOX[🟢 Virtualization<br/>Proxmox<br/>:8006]
-        FIREWALL[🟠 Security<br/>OPNsense<br/>:254]
-        
-        DASHBOARD --> ROUTER
-        DASHBOARD --> DNS
-        DASHBOARD --> PROXY
-        DASHBOARD --> PROXMOX
-        DASHBOARD --> FIREWALL
-        
-        %% Quick Actions
-        ROUTER --> ROUTER_ACTIONS[📊 Bandwidth Monitor<br/>🔒 Port Forwarding<br/>📱 Device Management]
-        DNS --> DNS_ACTIONS[🚫 Block Lists<br/>📈 Query Analytics<br/>⚙️ Local DNS]
-        PROXY --> PROXY_ACTIONS[🔄 Load Balancing<br/>🔒 SSL Termination<br/>🎯 Service Routing]
-        PROXMOX --> PROXMOX_ACTIONS[🖥️ VM Management<br/>📦 Container Control<br/>💾 Backup Monitor]
-        FIREWALL --> FIREWALL_ACTIONS[🔥 Traffic Rules<br/>🛡️ Intrusion Detection<br/>📊 Threat Analysis]
-    end
-
-    classDef dashboardClass fill:#f8f9fa,stroke:#343a40,stroke-width:3px
-    classDef serviceClass fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    classDef actionClass fill:#f1f8e9,stroke:#388e3c,stroke-width:1px
-
-    class DASHBOARD dashboardClass
-    class ROUTER,DNS,PROXY,PROXMOX,FIREWALL serviceClass
-    class ROUTER_ACTIONS,DNS_ACTIONS,PROXY_ACTIONS,PROXMOX_ACTIONS,FIREWALL_ACTIONS actionClass
-```
+> **💡 Tipp:** Alle Web-Interfaces sind auch im [Quickstart-Abschnitt](#-quickstart--schnellzugriff) oben zusammengefasst.
 
 ---
 
@@ -586,30 +586,6 @@ graph TB
 
 <!-- Alternativ: Bild für PDF/Export -->
 ![Fallback](docs/claude/diagrams/infrastructure.png)
-```
-
-## 📊 Automatisierung
-
-**Automatische Dokumentations-Generierung und Diagramm-Rendering**
-
-### 🤖 Proxmox Auto-Documentation
-- Automatische Erkennung aller VMs/Container
-- Mermaid-Diagramm-Generierung
-- Cron-Job fähig
-
-### 📊 Mermaid-Diagramme
-- Alle Diagramme in `docs/claude/diagrams/*.mmd`
-- Automatische PNG/SVG-Generierung via `make diagrams`
-- Git Pre-Commit Hook für Auto-Update
-- GitHub Actions für CI/CD
-
-### 🔄 Workflow:
-```bash
-# Diagramme generieren (nur geänderte)
-cd docs/claude && make diagrams
-
-# Commit mit Auto-Generierung
-git commit -m "Update diagrams"  # Hook generiert automatisch
 ```
 
 📖 **[Vollständige Automatisierungs-Dokumentation →](AUTOMATION.md)**
