@@ -1,7 +1,7 @@
 # 🔒 VPN-Konfiguration
 
 > **Detaillierte VPN-Setup Dokumentation**
-> [← Zurück zur Hauptdokumentation](HAUPTDOKUMENTATION.md)
+> [← Zurück zur Hauptdokumentation](README.md)
 
 ## VPN-Übersicht
 
@@ -45,4 +45,4 @@
 - **Port IPSec**: 500/4500 UDP
 - **MyFRITZ! DynDNS**: Aktiviert
 
-[← Zurück zur Hauptdokumentation](HAUPTDOKUMENTATION.md)
+[← Zurück zur Hauptdokumentation](README.md)

@@ -1,7 +1,7 @@
 # 🔒 Firewall & Routing Konfiguration
 
 > **Detaillierte Firewall-Regeln und Routing-Setup**
-> [← Zurück zur Hauptdokumentation](HAUPTDOKUMENTATION.md)
+> [← Zurück zur Hauptdokumentation](README.md)
 
 ## 🛡️ Firewall-Architektur
 
@@ -421,4 +421,4 @@ nslookup google.com 192.168.188.2
 - ✅ Connection Tracking
 - ✅ GeoIP Blocking (optional)
 
-[← Zurück zur Hauptdokumentation](HAUPTDOKUMENTATION.md)
+[← Zurück zur Hauptdokumentation](README.md)

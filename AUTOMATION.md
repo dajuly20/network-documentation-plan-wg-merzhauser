@@ -2,7 +2,7 @@
 
 > **Detaillierte Dokumentation der Automatisierungsprozesse**
 > Teil der WG Merzhauser Netzwerk-Infrastruktur
-> [← Zurück zur Hauptdokumentation](HAUPTDOKUMENTATION.md)
+> [← Zurück zur Hauptdokumentation](README.md)
 
 ---
 
@@ -127,7 +127,7 @@ graph TB
 # Bearbeite die .mmd-Datei
 nano docs/claude/diagrams/infrastructure.mmd
 
-# Oder aus HAUPTDOKUMENTATION.md extrahieren
+# Oder aus README.md extrahieren
 ```
 
 **2. Bilder neu generieren:**
@@ -307,4 +307,4 @@ mmdc --version
 
 ---
 
-[← Zurück zur Hauptdokumentation](HAUPTDOKUMENTATION.md)
+[← Zurück zur Hauptdokumentation](README.md)

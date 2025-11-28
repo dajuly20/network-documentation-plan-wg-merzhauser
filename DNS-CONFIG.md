@@ -1,7 +1,7 @@
 # 🌐 DNS-Infrastruktur Konfiguration
 
 > **Detaillierte DNS & Pi-hole Konfiguration**
-> [← Zurück zur Hauptdokumentation](HAUPTDOKUMENTATION.md)
+> [← Zurück zur Hauptdokumentation](README.md)
 
 ## DNS-Flow & Pi-hole Architektur
 
@@ -38,4 +38,4 @@
 - **⚡ Cache Hit Rate**: ~40-50%
 - **📝 Blocklist-Einträge**: ~1.000.000+
 
-[← Zurück zur Hauptdokumentation](HAUPTDOKUMENTATION.md)
+[← Zurück zur Hauptdokumentation](README.md)
