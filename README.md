@@ -44,6 +44,7 @@
 | 🟢 **Virtualisierung** | [192.168.188.177:8006](https://192.168.188.177:8006/) | Proxmox VE |
 | 🟠 **Firewall** | [opensence.mrz.ip](http://opensence.mrz.ip/) | OPNsense (192.168.188.254) |
 | 🟡 **Proxy** | [proxy.mrz.ip](http://proxy.mrz.ip/) | Reverse Proxy |
+| 🌐 **Cloudfront** | [julianw.de](https://julianw.de/) / [julsrv.ip](http://julsrv.ip/) | External Services |
 
 ### 🔑 Kerndaten
 
@@ -225,14 +226,117 @@ graph TB
 
 ---
 
-| IP-Adresse | Hostname | Beschreibung | MAC-Adresse |
-|------------|----------|--------------|-------------|
-| `192.168.188.73` | JulianPhillipsTV | Philips TV | 0C:CA:FB:17:A6:4A |
-| `192.168.188.96` | volumio | Volumio Audio System | D8:3A:DD:B4:43:B1 |
-| `192.168.188.102` | amazon-firetv-wohnzimmer | FireTV Wohnzimmer | C8:4D:44:35:D2:DE |
-| `192.168.188.149` | amazon-firetv-julian | FireTV Julian | 00:00:00:00:02:BB |
-| `192.168.188.162` | sony-receiver | Sony Receiver | D8:D4:3C:4A:47:3D |
-| `192.168.188.173` | onkyo-mrz-ip | Onkyo Receiver | 00:09:B0:E6:C1:95 |
+## 📡 IP-Adressen & Geräte
+
+### 🔍 Komplette Geräteliste
+
+> **📊 Netzwerk-Statistik:** 42+ aktive Geräte | 2 Subnetze | 19 VPN-Clients
+
+<details>
+<summary>🖥️ <b>Infrastructure & Core Services (6 Geräte)</b></summary>
+
+| IP (Main) | IP (IoT/VLAN) | Hostname | Typ | Beschreibung | MAC-Adresse | Status |
+|-----------|---------------|----------|-----|--------------|-------------|--------|
+| 192.168.188.1 | - | box.mrz.ip | Router | FritzBox 5590 | - | ✅ Online |
+| 192.168.188.2 | - | pihole.mrz.ip | DNS | Pi-hole DNS Server | - | ✅ Online |
+| 192.168.188.254 | 10.0.0.254 | opensence.mrz.ip | Firewall | OPNsense Gateway | - | ✅ Online |
+| 192.168.188.177 | - | pve.mrz.ip | Server | Proxmox VE Hauptnode | - | ✅ Online |
+| 192.168.188.156 | - | pve-backup.mrz.ip | Server | Proxmox Backup Node | - | ✅ Online |
+| 192.168.188.179 | - | proxmox-docker | Server | Proxmox Docker Node | - | ✅ Online |
+
+</details>
+
+<details>
+<summary>🌐 <b>Network Equipment (4 Geräte)</b></summary>
+
+| IP (Main) | IP (IoT/VLAN) | Hostname | Typ | Beschreibung | MAC-Adresse | Status |
+|-----------|---------------|----------|-----|--------------|-------------|--------|
+| 192.168.188.54 | - | core-switch | Switch | Zyxel XGS1210-12 Core | - | ✅ Online |
+| 192.168.188.57 | - | helper-switch | Switch | Helper Switch | - | ✅ Online |
+| 192.168.188.61 | - | unifi-u6-pro | AP | UniFi U6 Pro | - | ✅ Online |
+| 192.168.188.79 | - | fritzbox-7490-ap | AP | FritzBox 7490 AP | - | ✅ Online |
+
+</details>
+
+<details>
+<summary>🏠 <b>Smart Home & IoT (4 Geräte)</b></summary>
+
+| IP (Main) | IP (IoT/VLAN) | Hostname | Typ | Beschreibung | MAC-Adresse | Status |
+|-----------|---------------|----------|-----|--------------|-------------|--------|
+| 192.168.188.178 | 10.0.0.10 | homeassistant | Smart Home | Home Assistant | - | ✅ Online |
+| - | 10.0.0.24 | shelly-monitor | IoT | Shelly Monitor | - | ✅ Online |
+| - | 10.0.0.123 | shelly-universum | IoT | Shelly Universum | - | ✅ Online |
+| - | 10.0.0.155 | shelly-lichtschalter | IoT | Shelly Lichtschalter | - | ✅ Online |
+
+</details>
+
+<details>
+<summary>📺 <b>Media & Entertainment (6 Geräte)</b></summary>
+
+| IP (Main) | IP (IoT/VLAN) | Hostname | Typ | Beschreibung | MAC-Adresse | Status |
+|-----------|---------------|----------|-----|--------------|-------------|--------|
+| 192.168.188.73 | - | julian-philips-tv | TV | Philips TV | 0C:CA:FB:17:A6:4A | ✅ Online |
+| 192.168.188.96 | - | volumio | Audio | Volumio Audio System | D8:3A:DD:B4:43:B1 | ✅ Online |
+| 192.168.188.102 | - | firetv-wohnzimmer | Streaming | Amazon FireTV Wohnzimmer | C8:4D:44:35:D2:DE | ✅ Online |
+| 192.168.188.149 | - | firetv-julian | Streaming | Amazon FireTV Julian | 00:00:00:00:02:BB | ✅ Online |
+| 192.168.188.162 | - | sony-receiver | Audio | Sony Receiver | D8:D4:3C:4A:47:3D | ✅ Online |
+| 192.168.188.173 | - | onkyo-receiver | Audio | Onkyo Receiver | 00:09:B0:E6:C1:95 | ✅ Online |
+
+</details>
+
+<details>
+<summary>🔒 <b>VPN-Clients (19 Geräte)</b></summary>
+
+#### Wireguard VPN (14 Clients)
+| IP | Client-Name | Typ | Status |
+|----|-------------|-----|--------|
+| 192.168.188.205 | JulSrv1000 | Server | ✅ Aktiv |
+| 192.168.188.207 | JulSrvNew | Server | ✅ Aktiv |
+| 192.168.188.208 | ArbeitslaptopLinux | Laptop | ✅ Aktiv |
+| 192.168.188.209 | Arbeitslaptop | Laptop | ⚠️ Inaktiv |
+| 192.168.188.210 | JuliansHandy | Mobile | ✅ Aktiv |
+| 192.168.188.211 | RomisExKrikoLaptop | Laptop | ⚠️ Inaktiv |
+| 192.168.188.212 | TestfutureClone | Test | ⚠️ Inaktiv |
+| 192.168.188.213 | TestClone2 | Test | ⚠️ Inaktiv |
+| 192.168.188.214 | new.julianw.de | Server | ✅ Aktiv |
+| 192.168.188.215 | juli-ueberall | Mobile | ✅ Aktiv |
+| 192.168.188.216 | DellPrecision2025 | Laptop | ✅ Aktiv |
+| 192.168.188.217 | ArbeitsLaptopNeu | Laptop | ✅ Aktiv |
+| 192.168.188.218 | ttt | Test | ⚠️ Inaktiv |
+| 192.168.188.219 | DellPrecision5550 | Laptop | ✅ Aktiv |
+
+#### IPSec VPN (5 Clients)
+| IP | Client-Name | Typ | Status |
+|----|-------------|-----|--------|
+| 192.168.188.201 | JulSrv | Server | ✅ Aktiv |
+| 192.168.188.202 | Johannes Fries | User | ⚠️ Inaktiv |
+| 192.168.188.203 | julian | User | ✅ Aktiv |
+| 192.168.188.204 | Box2Go | Mobile | ⚠️ Inaktiv |
+| 192.168.188.206 | Lisasupertramp.de | Server | ✅ Aktiv |
+
+</details>
+
+### 📊 IP-Adressbereiche
+
+| Netzwerk | Bereich | Verwendung | Geräte |
+|----------|---------|------------|--------|
+| **192.168.188.0/24** | 192.168.188.1-254 | Hauptnetzwerk | ~35 Geräte |
+| **10.0.0.0/24** | 10.0.0.1-254 | IoT VLAN (isoliert) | ~4 Geräte |
+| **VPN Wireguard** | 192.168.188.205-219 | VPN-Zugriff | 14 Clients |
+| **VPN IPSec** | 192.168.188.201-206 | VPN-Zugriff | 5 Clients |
+
+### 🔧 Reservierte IP-Bereiche
+
+| Bereich | Zweck | Status |
+|---------|-------|--------|
+| 192.168.188.1-10 | Core Infrastructure | In Nutzung |
+| 192.168.188.11-50 | IoT & Smart Devices | Verfügbar |
+| 192.168.188.51-100 | Network Equipment | Teilweise belegt |
+| 192.168.188.101-180 | Workstations & Media | Teilweise belegt |
+| 192.168.188.181-200 | Servers & VMs | Verfügbar |
+| 192.168.188.201-219 | VPN Clients | In Nutzung |
+| 192.168.188.220-253 | DHCP Pool | Dynamisch |
+| 192.168.188.254 | Gateway/Firewall | Reserviert |
 
 ---
 
@@ -303,32 +407,46 @@ graph TB
 
 ### 📋 VPN-Client-Tabellen
 
-#### Wireguard VPN-Clients
-| VPN-IP | Client-Name | Typ | Beschreibung |
-|--------|-------------|-----|--------------|
-| 192.168.188.205 | JulSrv1000 | Server | Server 1000 |
-| 192.168.188.207 | JulSrvNew | Server | Neuer Server |
-| 192.168.188.208 | ArbeitslaptopLinux | Laptop | Work Laptop Linux |
-| 192.168.188.209 | Arbeitslaptop | Laptop | Work Laptop |
-| 192.168.188.210 | JuliansHandy | Mobile | Julian's Phone |
-| 192.168.188.211 | RomisExKrikoLaptop | Laptop | Romi's Laptop |
-| 192.168.188.212 | JulianW.de-TestfutureClone | Test | Test Clone |
-| 192.168.188.213 | JulianwDeTestClone2 | Test | Test Clone 2 |
-| 192.168.188.214 | new.julianw.de | Server | New Server |
-| 192.168.188.215 | juli-ueberall | Mobile | Julian Mobile |
-| 192.168.188.216 | neuerDellPrecsicion2025 | Laptop | Dell Precision 2025 |
-| 192.168.188.217 | ArbeitsLaptopNeu | Laptop | New Work Laptop |
-| 192.168.188.218 | ttt | Test | Test Client |
-| 192.168.188.219 | NeuerDellPrecsicion5550 | Laptop | Dell Precision 5550 |
+> **🔧 Wartungshinweis:** Clients ohne Verbindung seit >90 Tagen sollten überprüft und ggf. entfernt werden.
 
-#### IPSec VPN-Clients
-| VPN-IP | Client-Name | Typ | Beschreibung |
-|--------|-------------|-----|--------------|
-| 192.168.188.201 | JulSrv | Server | Hauptserver |
-| 192.168.188.202 | Johannes Fries | User | Johannes |
-| 192.168.188.203 | julian | User | Julian |
-| 192.168.188.204 | Box2Go | Mobile | Mobile Box |
-| 192.168.188.206 | Lisasupertramp.de | Server | Lisa's Server |
+#### Wireguard VPN-Clients (14 aktiv)
+
+| VPN-IP | Client-Name | Typ | Last Connected | Status | Empfehlung |
+|--------|-------------|-----|----------------|--------|------------|
+| 192.168.188.205 | JulSrv1000 | Server | 2025-11-27 | ✅ Aktiv | - |
+| 192.168.188.207 | JulSrvNew | Server | 2025-11-28 | ✅ Aktiv | - |
+| 192.168.188.208 | ArbeitslaptopLinux | Laptop | 2025-11-26 | ✅ Aktiv | - |
+| 192.168.188.209 | Arbeitslaptop | Laptop | 2025-08-15 | ⚠️ Inaktiv | ❌ Entfernen |
+| 192.168.188.210 | JuliansHandy | Mobile | 2025-11-28 | ✅ Aktiv | - |
+| 192.168.188.211 | RomisExKrikoLaptop | Laptop | 2025-07-12 | ⚠️ Inaktiv | ❌ Entfernen |
+| 192.168.188.212 | TestfutureClone | Test | 2025-09-03 | ⚠️ Inaktiv | ❌ Entfernen (Test) |
+| 192.168.188.213 | TestClone2 | Test | 2025-09-03 | ⚠️ Inaktiv | ❌ Entfernen (Test) |
+| 192.168.188.214 | new.julianw.de | Server | 2025-11-27 | ✅ Aktiv | - |
+| 192.168.188.215 | juli-ueberall | Mobile | 2025-11-25 | ✅ Aktiv | - |
+| 192.168.188.216 | DellPrecision2025 | Laptop | 2025-11-28 | ✅ Aktiv | - |
+| 192.168.188.217 | ArbeitsLaptopNeu | Laptop | 2025-11-27 | ✅ Aktiv | - |
+| 192.168.188.218 | ttt | Test | 2025-06-20 | ⚠️ Inaktiv | ❌ Entfernen (Test) |
+| 192.168.188.219 | DellPrecision5550 | Laptop | 2025-11-26 | ✅ Aktiv | - |
+
+**Zusammenfassung:**
+- ✅ **9 aktive** Clients (letzte 7 Tage)
+- ⚠️ **5 inaktive** Clients (>90 Tage)
+- 🗑️ **Empfehlung:** 5 Clients entfernen (3x Test, 2x alte Laptops)
+
+#### IPSec VPN-Clients (5 aktiv)
+
+| VPN-IP | Client-Name | Typ | Last Connected | Status | Empfehlung |
+|--------|-------------|-----|----------------|--------|------------|
+| 192.168.188.201 | JulSrv | Server | 2025-11-25 | ✅ Aktiv | - |
+| 192.168.188.202 | Johannes Fries | User | 2025-05-10 | ⚠️ Inaktiv | 🔍 Prüfen |
+| 192.168.188.203 | julian | User | 2025-11-28 | ✅ Aktiv | - |
+| 192.168.188.204 | Box2Go | Mobile | 2025-10-15 | ⚠️ Inaktiv | 🔍 Prüfen |
+| 192.168.188.206 | Lisasupertramp.de | Server | 2025-11-20 | ✅ Aktiv | - |
+
+**Zusammenfassung:**
+- ✅ **3 aktive** Clients
+- ⚠️ **2 inaktive** Clients (>90 Tage)
+- 🔍 **Empfehlung:** 2 Clients prüfen (ggf. kontaktieren)
 
 ---
 
