@@ -24,97 +24,95 @@
 
 ```mermaid
 graph TB
-    subgraph "WG Merzhauser Netzwerk"
-        
-        %% Internet & Router
-        INTERNET[🌍 Internet<br/>Glasfaser 1,1 Gbit/s ↓<br/>236 Mbit/s ↑]
-        FRITZBOX[🔵 FritzBox 5590 Fiber<br/>192.168.188.1<br/>box.mrz.ip<br/>MAC: 0C:72:74:AE:64:EB]
-        
-        INTERNET --> FRITZBOX
-        
-        %% Core Infrastructure
-        SWITCH[🔶 Zyxel XGS1210-12<br/>Core Switch<br/>2.5 Gbit/s Ports]
-        PIHOLE[🔴 Pi-hole DNS<br/>192.168.188.2<br/>pihole.mrz.ip / wg.weis.er<br/>MAC: D8:3A:DD:3B:90:FF]
-        FIREWALL[🟠 OPNsense Firewall<br/>192.168.188.254<br/>opensence.mrz.ip<br/>MAC: BC:24:11:D0:7E:E6]
-        
-        FRITZBOX --> SWITCH
-        SWITCH --> PIHOLE
-        SWITCH --> FIREWALL
-        
-        %% Proxmox Infrastructure  
-        PVE[🟢 Proxmox VE<br/>192.168.188.177<br/>pve.mrz.ip<br/>MAC: 1C:69:7A:0A:2A:73]
-        PVE_BACKUP[🟢 Proxmox Backup<br/>192.168.188.156<br/>pve-backup.mrz.ip<br/>MAC: BC:24:11:9B:AB:A7]
-        PVE_DOCKER[🟢 Proxmox Docker<br/>192.168.188.179<br/>proxmox-docker<br/>MAC: BC:24:11:73:BF:DF]
-        PROXY[🔵 Proxy Server<br/>proxy.mrz.ip<br/>Reverse Proxy / Load Balancer]
-        
-        SWITCH --> PVE
-        SWITCH --> PVE_BACKUP
-        SWITCH --> PVE_DOCKER
-        SWITCH --> PROXY
-        
-        %% Network Components
-        CORE_SWITCH[🔶 Core Switch<br/>192.168.188.54<br/>MAC: FC:22:F4:EC:15:B1]
-        HELPER_SWITCH[🔶 Helper Switch<br/>192.168.188.57<br/>MAC: D8:EC:5E:5B:7B:91]
-        UNIFI_AP[📡 UniFi U6 Pro<br/>192.168.188.61<br/>MAC: D8:B3:70:2D:48:A0]
-        FRITZBOX_AP[📡 FritzBox 7490 AP<br/>192.168.188.79<br/>ap.mrz.ip<br/>MAC: 08:96:D7:94:05:53]
-        
-        SWITCH --> CORE_SWITCH
-        SWITCH --> HELPER_SWITCH
-        SWITCH --> UNIFI_AP
-        SWITCH --> FRITZBOX_AP
-        
-        %% Smart Home & IoT
-        HOMEASSISTANT[🏠 Home Assistant<br/>192.168.188.178<br/>homeassistant-VM<br/>MAC: 02:65:CD:22:E0:F0]
-        SHELLY1[💡 Shelly Monitor<br/>192.168.188.24<br/>MAC: 48:55:19:CA:22:2F]
-        SHELLY2[💡 Shelly Universum<br/>192.168.188.123<br/>MAC: 98:CD:AC:2D:5E:4E]
-        SHELLY3[💡 Shelly Lichtschalter<br/>192.168.188.155<br/>MAC: E8:DB:84:D6:C6:37]
-        
-        SWITCH --> HOMEASSISTANT
-        FRITZBOX --> SHELLY1
-        FRITZBOX --> SHELLY2
-        FRITZBOX --> SHELLY3
-        
-        %% Media & Entertainment
-        FIRETV1[📺 FireTV Julian<br/>192.168.188.149<br/>MAC: 00:00:00:00:02:BB]
-        FIRETV2[📺 FireTV Wohnzimmer<br/>192.168.188.102<br/>MAC: C8:4D:44:35:D2:DE]
-        ONKYO[🔊 Onkyo Receiver<br/>192.168.188.173<br/>onkyo-mrz-ip<br/>MAC: 00:09:B0:E6:C1:95]
-        SONY[🔊 Sony Receiver<br/>192.168.188.162<br/>MAC: D8:D4:3C:4A:47:3D]
-        VOLUMIO[🎵 Volumio<br/>192.168.188.96<br/>MAC: D8:3A:DD:B4:43:B1]
-        
-        SWITCH --> FIRETV1
-        SWITCH --> FIRETV2
-        SWITCH --> ONKYO
-        FRITZBOX --> SONY
-        FRITZBOX --> VOLUMIO
-        
-        %% VLANs
-        VLAN1[🔷 VLAN 1<br/>Standard LAN<br/>192.168.188.0/24]
-        VLAN4[🔷 VLAN 4<br/>Management<br/>Router Connection]
-        IOT_VLAN[🔷 IoT VLAN<br/>10.0.0.0/24<br/>Gateway: 10.0.0.254]
-        
-        FRITZBOX -.-> VLAN4
-        SWITCH -.-> VLAN1
-        FIREWALL -.-> IOT_VLAN
+    INTERNET([🌍 Internet<br/>Glasfaser 1,1 Gbit/s])
+
+    INTERNET ==> FRITZBOX
+
+    subgraph edge [🔒 Edge Security Zone]
+        FRITZBOX[🔵 FritzBox 5590<br/>192.168.188.1<br/>box.mrz.ip]
+        FIREWALL[🛡️ OPNsense Firewall<br/>192.168.188.254<br/>opensence.mrz.ip]
+        FRITZBOX ==> FIREWALL
     end
 
-    %% Styling
+    FIREWALL ==> SWITCH
+
+    subgraph core [⚙️ Core Network Infrastructure]
+        SWITCH[🔶 Zyxel XGS1210-12<br/>2.5G Core Switch]
+        PIHOLE[🔴 Pi-hole DNS<br/>192.168.188.2<br/>pihole.mrz.ip]
+        SWITCH --> PIHOLE
+    end
+
+    subgraph servers [💻 Server & Virtualization Zone]
+        PVE[🟢 Proxmox VE<br/>192.168.188.177<br/>pve.mrz.ip]
+        PVE_BACKUP[🟢 Proxmox Backup<br/>192.168.188.156]
+        PVE_DOCKER[🟢 Proxmox Docker<br/>192.168.188.179]
+        PROXY[🔷 Reverse Proxy<br/>proxy.mrz.ip]
+    end
+
+    SWITCH --> PVE
+    SWITCH --> PVE_BACKUP
+    SWITCH --> PVE_DOCKER
+    SWITCH --> PROXY
+
+    subgraph iot [🏠 IoT & Smart Home Zone - Secured by OPNsense]
+        HOMEASSISTANT[🏠 Home Assistant<br/>192.168.188.178]
+        SHELLY1[💡 Shelly Monitor<br/>192.168.188.24]
+        SHELLY2[💡 Shelly Universum<br/>192.168.188.123]
+        SHELLY3[💡 Shelly Lichtschalter<br/>192.168.188.155]
+    end
+
+    FIREWALL ==> HOMEASSISTANT
+    FIREWALL ==> SHELLY1
+    FIREWALL ==> SHELLY2
+    FIREWALL ==> SHELLY3
+
+    subgraph network [📡 Network Equipment]
+        CORE_SWITCH[🔶 Core Switch<br/>192.168.188.54]
+        HELPER_SWITCH[🔶 Helper Switch<br/>192.168.188.57]
+        UNIFI_AP[📡 UniFi U6 Pro<br/>192.168.188.61]
+        FRITZBOX_AP[📡 FritzBox 7490 AP<br/>192.168.188.79]
+    end
+
+    SWITCH --> CORE_SWITCH
+    SWITCH --> HELPER_SWITCH
+    SWITCH --> UNIFI_AP
+    SWITCH --> FRITZBOX_AP
+
+    subgraph media [📺 Media & Entertainment]
+        FIRETV1[📺 FireTV Julian<br/>192.168.188.149]
+        FIRETV2[📺 FireTV Wohnzimmer<br/>192.168.188.102]
+        ONKYO[🔊 Onkyo Receiver<br/>192.168.188.173]
+        SONY[🔊 Sony Receiver<br/>192.168.188.162]
+        VOLUMIO[🎵 Volumio<br/>192.168.188.96]
+    end
+
+    SWITCH --> FIRETV1
+    SWITCH --> FIRETV2
+    SWITCH --> ONKYO
+    SWITCH --> SONY
+    SWITCH --> VOLUMIO
+
+    classDef internetClass fill:#e1f5fe,stroke:#01579b,stroke-width:4px
     classDef routerClass fill:#e3f2fd,stroke:#1565c0,stroke-width:3px
+    classDef firewallClass fill:#fff3e0,stroke:#e65100,stroke-width:4px
     classDef switchClass fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     classDef serverClass fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
-    classDef dnsClass fill:#ffebee,stroke:#d32f2f,stroke-width:2px
-    classDef firewallClass fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef dnsClass fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef iotClass fill:#fce4ec,stroke:#c2185b,stroke-width:2px
     classDef mediaClass fill:#f1f8e9,stroke:#558b2f,stroke-width:2px
-    classDef smarthomeClass fill:#fce4ec,stroke:#c2185b,stroke-width:2px
-    classDef vlanClass fill:#e0f2f1,stroke:#00695c,stroke-width:1px,stroke-dasharray: 5 5
+    classDef networkClass fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    classDef proxyClass fill:#e0f2f1,stroke:#00695c,stroke-width:2px
 
+    class INTERNET internetClass
     class FRITZBOX routerClass
+    class FIREWALL firewallClass
     class SWITCH,CORE_SWITCH,HELPER_SWITCH switchClass
     class PVE,PVE_BACKUP,PVE_DOCKER serverClass
     class PIHOLE dnsClass
-    class FIREWALL firewallClass
+    class HOMEASSISTANT,SHELLY1,SHELLY2,SHELLY3 iotClass
     class FIRETV1,FIRETV2,ONKYO,SONY,VOLUMIO mediaClass
-    class HOMEASSISTANT,SHELLY1,SHELLY2,SHELLY3 smarthomeClass
-    class VLAN1,VLAN4,IOT_VLAN vlanClass
+    class UNIFI_AP,FRITZBOX_AP networkClass
+    class PROXY proxyClass
 ```
 
 ---
